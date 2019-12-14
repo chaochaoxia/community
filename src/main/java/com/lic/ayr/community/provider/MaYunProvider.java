@@ -34,8 +34,9 @@ public class MaYunProvider {
                     .build();
             try (Response response = client.newCall(request).execute()) {
                 String string = response.body().string();
+//
                 ReturnAccessToKenDTO returnAccessToKenDTO = JSON.parseObject(string, ReturnAccessToKenDTO.class);
-                System.out.println(returnAccessToKenDTO);
+
                 return returnAccessToKenDTO;
             } catch (IOException e) {
                 e.printStackTrace();
