@@ -4,7 +4,7 @@ public class User {
     private Integer id;
     private String name;
     private String account_id;
-    private String token;//   浏览器发送cookie给服务器端
+    private String token;
     private Long gmt_Create;
     private Long gmt_Modified;
 
@@ -54,5 +54,17 @@ public class User {
 
     public void setGmt_Modified(Long gmt_Modified) {
         this.gmt_Modified = gmt_Modified;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", account_id='" + account_id + '\'' +
+                ", token='" + token + '\'' +
+                ", gmt_Create=" + gmt_Create +
+                ", gmt_Modified=" + gmt_Modified +
+                '}';
     }
 }
