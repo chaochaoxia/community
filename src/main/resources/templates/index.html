@@ -24,7 +24,7 @@
 
             <form class="navbar-form navbar-left">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="搜索话题">
+                    <input type="text" class="form-control" placeholder="搜索动态">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
@@ -62,7 +62,7 @@
                 <div class="media-body">
                     <h4 class="media-heading" th:text="${question.title}"></h4>
                     <span th:text="${question.description}"></span><br>
-                    <span class="desc"><span th:text="${question.comment_count}"></span>个回复·<span th:text="${question.view_count}"></span>个查看·发表时间<span th:text="${#dates.format(question.gmt_create,'yyyy-MM-dd hh:mm:ss')}"></span></span>
+                    <span class="desc"><span th:text="${question.comment_count}"></span>个回复&nbsp;·&nbsp;<span th:text="${question.view_count}"></span>个查看&nbsp;·&nbsp;发表时间<span th:text="${#dates.format(question.gmt_create,'yyyy-MM-dd hh:mm:ss')}"></span></span>
                 </div>
             </div>
         </div>
