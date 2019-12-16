@@ -1,8 +1,8 @@
 package com.lic.ayr.community.controller;
 
 
-import com.lic.ayr.community.mapper.MayunUserMapper;
 import com.lic.ayr.community.mapper.QuesstionMapper;
+import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.Question;
 import com.lic.ayr.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class PublishController {
     QuesstionMapper quesstionMapper;
 
     @Autowired
-    MayunUserMapper mayunUserMapper;
+    UserMapper userMapper;
     
     /**
      * 跳转到发表页面
@@ -66,7 +66,7 @@ public class PublishController {
                 for (Cookie cookie : cookies) {//遍历cookie
                     if (cookie.getName().equals("token")){//看看有没有我们自定义的名为token的cookie
                         String token=cookie.getValue();//有的话获取他的值
-                        user=mayunUserMapper.selectToken(token);//给h2数据库查 查到生成一个对象
+                        user=userMapper.selectToken(token);//给h2数据库查 查到生成一个对象
                         if (user !=null && user.getId()!=null){//对象不为空的话
                             request.getSession().setAttribute("user",user);//再把它传到页面上
                         }

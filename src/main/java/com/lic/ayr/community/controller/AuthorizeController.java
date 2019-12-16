@@ -3,7 +3,7 @@ package com.lic.ayr.community.controller;
 import com.lic.ayr.community.bean.MaYunUser;
 import com.lic.ayr.community.dto.AccessTokenDTO;
 import com.lic.ayr.community.dto.ReturnAccessToKenDTO;
-import com.lic.ayr.community.mapper.MayunUserMapper;
+import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.User;
 import com.lic.ayr.community.provider.MaYunProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class AuthorizeController {
     private String redirectUrl;
 
     @Autowired
-    MayunUserMapper mayunUserMapper;
+    UserMapper userMapper;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -63,7 +63,7 @@ public class AuthorizeController {
             user.setGmt_create(System.currentTimeMillis());
             user.setGmt_modified(user.getGmt_create());
             user.setAvatarUrl(mayunuser.getAvatar_url());
-            mayunUserMapper.insertMayunUser(user);
+            userMapper.insertMayunUser(user);
 //            用token代替本来的cookie  把token存数据库
 //            这样不会关掉服务器就要重新登录
             response.addCookie(new Cookie("token",token));

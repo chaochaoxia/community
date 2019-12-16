@@ -51,18 +51,18 @@
 <div class="container-fluid main">
     <div class="row ">
         <div class="col-lg-9 col-md-12 col-sm-12 col-sm-12">
-            <h2><span class="glyphicon  glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <h2><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>&nbsp;动态</h2>
             <hr>
-            <div class="media">
+            <div class="media " th:each="question :${questions}">
                 <div class="media-left">
                     <a href="#">
-                        <img class="media-object img-rounded" src="https://avatar.gitee.com/uploads/69/4959569_liclic.png?1576489674" alt="...">
+                        <img class="media-object img-rounded" th:src="${question.user.avatarUrl}">
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading">Media heading</h4>
-                    xxx发表的<br>
-                    <span class="desc"> 2个回复  31次浏览  1小时前</span>
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
+                    <span th:text="${question.description}"></span><br>
+                    <span class="desc"><span th:text="${question.comment_count}"></span>个回复·<span th:text="${question.view_count}"></span>个查看·发表时间<span th:text="${#dates.format(question.gmt_create,'yyyy-MM-dd hh:mm:ss')}"></span></span>
                 </div>
             </div>
         </div>
