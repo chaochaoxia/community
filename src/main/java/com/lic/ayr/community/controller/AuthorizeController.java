@@ -53,16 +53,16 @@ public class AuthorizeController {
 
         ReturnAccessToKenDTO accessToken = maYunProvider.getAccessToken(accessTokenDTO);
         MaYunUser mayunuser = maYunProvider.getUser(accessToken.getAccess_token());
-        if(mayunuser!=null){
-
+        if(mayunuser!=null &&mayunuser.getId()!=null){
 //            存入h2数据库
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(mayunuser.getName());
             user.setAccount_id(String.valueOf(mayunuser.getId()));
-            user.setGmt_Create(System.currentTimeMillis());
-            user.setGmt_Modified(user.getGmt_Create());
+            user.setGmt_create(System.currentTimeMillis());
+            user.setGmt_modified(user.getGmt_create());
+            user.setAvatarUrl(mayunuser.getAvatar_url());
             mayunUserMapper.insertMayunUser(user);
 //            用token代替本来的cookie  把token存数据库
 //            这样不会关掉服务器就要重新登录

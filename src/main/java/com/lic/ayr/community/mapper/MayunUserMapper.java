@@ -10,12 +10,11 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface MayunUserMapper {
 
-    @Insert("insert into user (name,account_id,token,gmt_Create,gmt_Modified) values (#{name},#{account_id},#{token},#{gmt_Create},#{gmt_Modified})")
+    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified,avatarUrl) values (#{name},#{account_id},#{token},#{gmt_create},#{gmt_modified},#{avatarUrl})")
     void insertMayunUser(User user);
 
     @Select("SELECT * from user where token = #{token}")//不是类的话 参数要加@Param注解
     User selectToken(@Param("token") String token);
-
 
 
 

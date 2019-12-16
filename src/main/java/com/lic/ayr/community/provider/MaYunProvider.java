@@ -34,7 +34,7 @@ public class MaYunProvider {
                     .build();
             try (Response response = client.newCall(request).execute()) {
                 String string = response.body().string();
-//
+                //JSON.parseObject(string, ReturnAccessToKenDTO.class)自动把string json对象转换成java类对象
                 ReturnAccessToKenDTO returnAccessToKenDTO = JSON.parseObject(string, ReturnAccessToKenDTO.class);
 
                 return returnAccessToKenDTO;
