@@ -21,8 +21,6 @@ public class PublishController {
     @Autowired
     QuesstionMapper quesstionMapper;
 
-    @Autowired
-    UserMapper userMapper;
     
     /**
      * 跳转到发表页面
@@ -59,21 +57,8 @@ public class PublishController {
             model.addAttribute("error","标签不能为空");
             return "publish";
         }
-        User user=null;//初始化一个uesr对象为空
+        User user =(User)request.getSession().getAttribute("user");
 
-            Cookie[] cookies = request.getCookies();
-            if (cookies !=null && cookies.length!=0){
-                for (Cookie cookie : cookies) {//遍历cookie
-                    if (cookie.getName().equals("token")){//看看有没有我们自定义的名为token的cookie
-                        String token=cookie.getValue();//有的话获取他的值
-                        user=userMapper.selectToken(token);//给h2数据库查 查到生成一个对象
-                        if (user !=null && user.getId()!=null){//对象不为空的话
-                            request.getSession().setAttribute("user",user);//再把它传到页面上
-                        }
-                        break;
-                    }
-                }
-            }
         if (user==null){//未登录状态 返回错误信息 重新返回发布页面
 
             model.addAttribute("error","没有登录不能发表动态");

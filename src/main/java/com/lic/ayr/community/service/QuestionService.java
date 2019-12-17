@@ -1,5 +1,6 @@
 package com.lic.ayr.community.service;
 
+import com.lic.ayr.community.dto.PaginationDTO;
 import com.lic.ayr.community.dto.QuestionToKenDTO;
 import com.lic.ayr.community.mapper.QuesstionMapper;
 import com.lic.ayr.community.mapper.UserMapper;
@@ -21,11 +22,17 @@ public class QuestionService {
     @Autowired
     QuesstionMapper quesstionMapper;
 
-    public List<QuestionToKenDTO> list() {
+    public PaginationDTO list(Integer page, Integer size) {//全部
+
+        Integer totalCount = quesstionMapper.count();
+        PaginationDTO paginationDTO = new PaginationDTO();
+        paginationDTO.setPagination(totalCount,page,size);
+
+        Integer offset=size*(paginationDTO.getPage()-1);
 //        先查全部Questions
-        List<Question> questions = quesstionMapper.list();
+        List<Question> questions = quesstionMapper.list(offset,size);
         List<QuestionToKenDTO> questionToKenDTOList=new ArrayList<>();
-//        再遍历每一个question
+        //        再遍历每一个question
         for (Question question : questions) {
             User user=userMapper.findById(question.getCreator());//每一个question的用户id creator去找对应的user
 
@@ -37,7 +44,41 @@ public class QuestionService {
 
             questionToKenDTOList.add(questionToKenDTO);//把遍历的DTO都添加到list中
         }
-            return questionToKenDTOList;//返回list
+            paginationDTO.setQuestions(questionToKenDTOList);
+        return paginationDTO;//返回list
     }
 
+    public PaginationDTO userlist(Integer userid, Integer page, Integer size) {//跟userid相关
+        Integer totalCount = quesstionMapper.countByUserId(userid);
+        PaginationDTO paginationDTO = new PaginationDTO();
+        paginationDTO.setPagination(totalCount,page,size);
+
+        Integer offset=size*(paginationDTO.getPage()-1);
+//        先查全部Questions
+        List<Question> questions = quesstionMapper.userlist(userid,offset,size);
+        List<QuestionToKenDTO> questionToKenDTOList=new ArrayList<>();
+        //        再遍历每一个question
+        for (Question question : questions) {
+            User user=userMapper.findById(question.getCreator());//每一个question的用户id creator去找对应的user
+
+            QuestionToKenDTO questionToKenDTO = new QuestionToKenDTO();//new DTO
+
+            BeanUtils.copyProperties(question,questionToKenDTO);//把question的属性复制给 DTO
+
+            questionToKenDTO.setUser(user);//把user设到DTO中的user
+
+            questionToKenDTOList.add(questionToKenDTO);//把遍历的DTO都添加到list中
+        }
+        paginationDTO.setQuestions(questionToKenDTOList);
+        return paginationDTO;//返回list
+    }
+
+    public QuestionToKenDTO getById(Integer id) {
+        QuestionToKenDTO questionToKenDTO = new QuestionToKenDTO();
+        Question question = quesstionMapper.getById(id);
+        BeanUtils.copyProperties(question,questionToKenDTO);//把question的属性复制给 DTO
+        User user=userMapper.findById(question.getCreator());//每一个question的用户id creator去找对应的user
+        questionToKenDTO.setUser(user);
+        return questionToKenDTO;
+    }
 }
