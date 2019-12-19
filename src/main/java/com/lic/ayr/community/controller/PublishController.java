@@ -2,26 +2,26 @@ package com.lic.ayr.community.controller;
 
 
 import com.lic.ayr.community.mapper.QuesstionMapper;
-import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.Question;
 import com.lic.ayr.community.model.User;
+import com.lic.ayr.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
 
-    @Autowired
-    QuesstionMapper quesstionMapper;
 
-    
+
+    @Autowired
+    QuestionService questionService;
+
     /**
      * 跳转到发表页面
      * */
@@ -31,6 +31,19 @@ public class PublishController {
         return "publish";
     }
 
+    /**
+     * 跳转到编辑信息
+     * */
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id")Integer id,Model model){
+        Question question = questionService.getquestionById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+
+        return "publish";
+    }
 
     /**
      * 发布功能
@@ -64,16 +77,10 @@ public class PublishController {
             model.addAttribute("error","没有登录不能发表动态");
             return "publish";
         }
-//        Question question = new Question();//new 一个Question 对象
-//        //把页面的参数都传进来赋值到对象中 然后保存到数据库
-//        question.setTitle(title);
-//        question.setDescription(description);
-//        question.setTag(tag);
-        question.setCreator(user.getId());
-        question.setGmt_create(System.currentTimeMillis());
-        question.setGmt_modified(question.getGmt_create());
 
-        quesstionMapper.create(question);
+        question.setCreator(user.getId());
+        questionService.create(question);
+
 
 //        发布成功回到首页
         return "redirect:/";

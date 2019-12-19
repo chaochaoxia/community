@@ -3,9 +3,9 @@ package com.lic.ayr.community.controller;
 import com.lic.ayr.community.bean.MaYunUser;
 import com.lic.ayr.community.dto.AccessTokenDTO;
 import com.lic.ayr.community.dto.ReturnAccessToKenDTO;
-import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.User;
 import com.lic.ayr.community.provider.MaYunProvider;
+import com.lic.ayr.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -37,8 +36,10 @@ public class AuthorizeController {
     @Value("${MaYun.redirect.uri}")
     private String redirectUrl;
 
+
+
     @Autowired
-    UserMapper userMapper;
+    UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -54,25 +55,36 @@ public class AuthorizeController {
         ReturnAccessToKenDTO accessToken = maYunProvider.getAccessToken(accessTokenDTO);
         MaYunUser mayunuser = maYunProvider.getUser(accessToken.getAccess_token());
         if(mayunuser!=null &&mayunuser.getId()!=null){
-//            存入h2数据库
-            User user = new User();
             String token = UUID.randomUUID().toString();
-            user.setToken(token);
-            user.setName(mayunuser.getName());
-            user.setAccount_id(String.valueOf(mayunuser.getId()));
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
-            user.setAvatarUrl(mayunuser.getAvatar_url());
-            userMapper.insertMayunUser(user);
+
+                User user = new User();
+            // 没有就存入mysql数据库
+                user.setToken(token);
+                user.setName(mayunuser.getName());
+                user.setAccount_id(String.valueOf(mayunuser.getId()));
+                user.setAvatar_url(mayunuser.getAvatar_url());
+                userService.createOrUpdate(user);
 //            用token代替本来的cookie  把token存数据库
 //            这样不会关掉服务器就要重新登录
-            response.addCookie(new Cookie("token",token));
 
+            response.addCookie(new Cookie("token",token));
 //            重定向到index页面 这样地址栏不会有多余参数
             return "redirect:/";
 
         }else {
             return "redirect:/";
         }
+    }
+
+    @GetMapping("logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+
+        request.getSession().removeAttribute("user");
+        Cookie cookie=new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/";
     }
 }

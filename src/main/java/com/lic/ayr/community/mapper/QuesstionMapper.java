@@ -1,10 +1,7 @@
 package com.lic.ayr.community.mapper;
 
 import com.lic.ayr.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,4 +26,14 @@ public interface QuesstionMapper {
 
     @Select("select * from question where id = #{id}")
     Question getById(@Param(value = "id")Integer id);
+
+    @Update("update question set title =#{title} ,description=#{description},gmt_modified=${gmt_modified},tag=#{tag} where id=#{id}")
+    int update(Question question);
+
+    @Update("update question set view_count= view_count + 1 where id=#{id}")
+    void updateView(@Param(value = "id")Integer id);
+
+    @Update("update question set comment_count= comment_count + 1 where id=#{id}")
+    void updateComment(@Param(value = "id")Integer id);
+
 }

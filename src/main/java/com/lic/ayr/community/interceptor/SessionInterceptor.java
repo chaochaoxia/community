@@ -24,12 +24,12 @@ public class SessionInterceptor implements HandlerInterceptor {
         /*
          * 每一次请求先获取cookie 就是token
          * */
-        Cookie[] cookies = request.getCookies();//拿cookie 如果第一次没有会报错 就让他直接跳转到index
+        Cookie[] cookies = request.getCookies();//拿所有cookie 如果第一次没有会报错 就让他直接跳转到index
         if (cookies!=null && cookies.length!=0){
             for (Cookie cookie : cookies) {//遍历cookie
                 if (cookie.getName().equals("token")){//看看有没有我们自定义的名为token的cookie
                     String token=cookie.getValue();//有的话获取他的值
-                    User user=userMapper.selectToken(token);//给h2数据库查 查到生成一个对象
+                    User user=userMapper.selectToken(token);//给mysql数据库查 查到生成一个对象
 
                     if (user !=null && user.getId()!=null){//对象不为空的话
                         request.getSession().setAttribute("user",user);//再把它传到页面上
