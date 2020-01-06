@@ -28,6 +28,7 @@ public class CommentController {
         if (user==null){
             return LicReturn.errof(CustomizeErrorCode.LOGIN_NOT_FOUND);
         }
+
         commentDTO.setCommentator(user.getId());
         commentService.insert(commentDTO);
 
