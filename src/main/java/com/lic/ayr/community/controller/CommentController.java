@@ -22,7 +22,7 @@ public class CommentController {
     @ResponseBody
     @PostMapping("/comment")
     public Object post(@RequestBody CommentDTO commentDTO, HttpServletRequest request){
-
+        System.out.println(1);
         User user = (User) request.getSession().getAttribute("user");
 
         if (user==null){
