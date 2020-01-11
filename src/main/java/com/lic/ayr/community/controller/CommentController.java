@@ -1,7 +1,7 @@
 package com.lic.ayr.community.controller;
 
 import com.lic.ayr.community.Util.LicReturn;
-import com.lic.ayr.community.dto.CommentDTO;
+import com.lic.ayr.community.dto.CommentCreateDTO;
 import com.lic.ayr.community.exception.CustomizeErrorCode;
 import com.lic.ayr.community.model.User;
 import com.lic.ayr.community.service.CommentService;
@@ -21,16 +21,18 @@ public class CommentController {
 
     @ResponseBody
     @PostMapping("/comment")
-    public Object post(@RequestBody CommentDTO commentDTO, HttpServletRequest request){
-        System.out.println(1);
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO, HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
 
         if (user==null){
             return LicReturn.errof(CustomizeErrorCode.LOGIN_NOT_FOUND);
         }
+        if (commentCreateDTO==null || commentCreateDTO.getContent()==null||commentCreateDTO.getContent()=="") {
+            return LicReturn.errof(CustomizeErrorCode.COMMENT_IS_EMPTY);
+        }
 
-        commentDTO.setCommentator(user.getId());
-        commentService.insert(commentDTO);
+        commentCreateDTO.setCommentator(user.getId());
+        commentService.insert(commentCreateDTO);
 
         return LicReturn.okof();
     }

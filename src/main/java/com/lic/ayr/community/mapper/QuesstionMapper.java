@@ -12,13 +12,13 @@ public interface QuesstionMapper {
     @Insert("insert into question (title,description,gmt_create,gmt_modified,creator,tag) values (#{title},#{description},#{gmt_create},#{gmt_modified},#{creator},#{tag})")
      void create(Question question);
 
-    @Select("select * from question limit #{offset},#{size}")
+    @Select("select * from question ORDER BY gmt_create DESC limit #{offset},#{size}")
     List<Question> list(@Param(value = "offset") Integer offset,@Param(value = "size") Integer size);
 
     @Select("select count(1) from question")//查动态的总数
     Integer count();
 
-    @Select("select * from question where creator = #{userId} limit #{offset},#{size}")
+    @Select("select * from question where creator = #{userId} ORDER BY gmt_create DESC limit #{offset},#{size}")
     List<Question> userlist(@Param(value = "userId")Integer userId,@Param(value = "offset") Integer offset,@Param(value = "size") Integer size);
 
     @Select("select count(1) from question where creator = #{userId}")//查跟user动态的总数

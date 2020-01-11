@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/css/community2.css">
-    <script src="/js/community.js"></script>
+    <link rel="stylesheet" href="/css/community3.css">
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
@@ -16,6 +16,7 @@
 <div class="container-fluid main">
     <div class="row ">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <!--问题-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h3>
                     <span th:text="${question.title}"></span>
@@ -36,7 +37,39 @@
                 <br>
                 <br>
             </div>
+            <!--回复-->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h4>
+                <span th:text="${question.comment_count}"></span>个回复
+            </h4>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:each="comment :${comments}">
+                <div class="media-a ">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" th:src="${comment.user.avatar_url}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h5 class="media-heading">
+                            <span th:text="${comment.user.name}"></span>
+                        </h5>
+                        <div th:text="${comment.content}" class="comment-text"></div>
+                        <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp2">
+                        <div class="menu">
+                            <span class="glyphicon glyphicon-thumbs-up like-comment icon"></span>
+                            <span class="glyphicon glyphicon-comment icon"></span>
+                            <span class="pull-right desc" th:text="${#dates.format(comment.gmt_create,'yyyy-MM-dd hh:mm:ss')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <!--回复框-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3>提交回复</h3>
+                <br><br>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
                 <div class="media ">
                     <div class="media-left">
                         <a href="#">
@@ -48,12 +81,15 @@
                             <span th:text="${question.user.name}"></span>
                         </h5>
                     </div>
+                    <div>
+                       <button onclick="returnTop()" id="btnTop" title="返回顶部">返回顶部</button>
+                    </div>
                 </div>
                 <input type="hidden" id="question_id" th:value="${question.id}">
                 <textarea class="col-lg-12 col-md-12 col-sm-12 col-xs-12 from-control comment" rows="6" id="comment_textarea"></textarea>
-                <button type="button" class="btn btn-success comment-btn" onclick="post()">回复</button>
+                <button type="button" class="btn btn-success comment-btn" onclick="comment()">回复</button>
             </div>
-
+            </div>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-sm-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-sm-12 ">
@@ -79,4 +115,54 @@
     </div>
 </div>
 </body>
+<script>
+    function comment() {
+        var questionId = $("#question_id").val();
+        var questionText = $("#comment_textarea").val();
+        if (!questionText){
+            alert("回复内容不能为空！！！")
+            return;
+        }
+        $.ajax({
+            type:"POST",
+            url:"/comment",
+            contentType:'application/json',
+            data:JSON.stringify({
+                "parent_id": questionId,
+                "content": questionText,
+                "type": 1
+            }) ,
+            success:function (response) {
+                if (response.code == 200){
+                    $("#comment_section").hide();
+                    window.location.reload();
+                }else {
+                    alert(response.message);
+                }
+            },
+            dataType:"json"
+        });
+
+    }
+
+    // 当网页向下滑动 20px 出现"返回顶部" 按钮
+    window.onscroll = function() {
+        scrollFunction()
+    };
+
+    function scrollFunction() {
+        console.log(121);
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("btnTop").style.display = "block";
+        } else {
+            document.getElementById("btnTop").style.display = "none";
+        }
+    }
+
+    // 点击按钮，返回顶部
+    function returnTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
 </html>

@@ -1,16 +1,23 @@
 package com.lic.ayr.community.service;
 
+import com.lic.ayr.community.dto.CommentCreateDTO;
 import com.lic.ayr.community.dto.CommentDTO;
 import com.lic.ayr.community.enums.CommentTypeEnum;
 import com.lic.ayr.community.exception.CustomizeErrorCode;
 import com.lic.ayr.community.exception.CustomizeException;
 import com.lic.ayr.community.mapper.CommentMapper;
 import com.lic.ayr.community.mapper.QuesstionMapper;
+import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.Comment;
 import com.lic.ayr.community.model.Question;
+import com.lic.ayr.community.model.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -21,15 +28,17 @@ public class CommentService {
     @Autowired
     QuesstionMapper quesstionMapper;
 
+    @Autowired
+    UserMapper userMapper;
     @Transactional
-    public void insert(CommentDTO commentDTO) {
+    public void insert(CommentCreateDTO commentCreateDTO) {
         Comment comment = new Comment();
-        comment.setParent_id(commentDTO.getParent_id());
-        comment.setContent(commentDTO.getContent());
-        comment.setType(commentDTO.getType());
+        comment.setParent_id(commentCreateDTO.getParent_id());
+        comment.setContent(commentCreateDTO.getContent());
+        comment.setType(commentCreateDTO.getType());
         comment.setGmt_create(System.currentTimeMillis());
         comment.setGmt_modified(comment.getGmt_create());
-        comment.setCommentator(commentDTO.getCommentator());
+        comment.setCommentator(commentCreateDTO.getCommentator());
         if (comment.getParent_id()==null ||comment.getParent_id() == 0){
             throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);//没有选择任何问题或评论进行回复
         }
@@ -54,5 +63,29 @@ public class CommentService {
             quesstionMapper.updateComment(question.getId());
         }
 
+    }
+
+    public List<CommentDTO> listByQuestionId(Integer id) {
+        List<Comment> comments = commentMapper.selectByIds(id);
+        List<Comment> commentList=new ArrayList<>();
+        List<CommentDTO> commentdtos=new ArrayList<>();
+
+        if (comments.size()==0){
+            return new ArrayList<>();
+        }
+
+        for (Comment comment : comments) {
+            if (comment.getType()==1){
+                commentList.add(comment);
+            }
+        }
+        for (Comment comment : commentList) {
+            CommentDTO commentDTO=new CommentDTO();
+            BeanUtils.copyProperties(comment,commentDTO);
+            User user = userMapper.findById(comment.getCommentator());
+            commentDTO.setUser(user);
+            commentdtos.add(commentDTO);
+        }
+        return commentdtos;
     }
 }

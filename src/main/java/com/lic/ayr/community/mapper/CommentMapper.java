@@ -4,6 +4,8 @@ package com.lic.ayr.community.mapper;
 import com.lic.ayr.community.model.Comment;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface CommentMapper {
 
@@ -13,5 +15,8 @@ public interface CommentMapper {
 
     @Select("select * from comment where parent_id = #{parent_id}")
     Comment selectById(@Param(value = "parent_id") Integer parent_id);
+
+    @Select("select * from comment where parent_id = #{parent_id} order by gmt_create desc")
+    List<Comment> selectByIds(@Param(value = "parent_id") Integer parent_id);
 
 }

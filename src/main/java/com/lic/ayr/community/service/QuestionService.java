@@ -90,6 +90,7 @@ public class QuestionService {
         if (question==null){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
+//        增加阅读数
         quesstionMapper.updateView(id);
         BeanUtils.copyProperties(question,questionToKenDTO);//把question的属性复制给 DTO
         User user=userMapper.findById(question.getCreator());//每一个question的用户id creator去找对应的user
