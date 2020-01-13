@@ -48,10 +48,10 @@ public class CommentService {
 
         if (comment.getType() ==CommentTypeEnum.COMMENT.getType()){
             //回复评论
-           Comment dbcomment =commentMapper.selectById(comment.getParent_id());//根据父级id查对应的数据
-            if (dbcomment == null){
-                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT);//您的评论不存在
-            }
+//           Comment dbcomment =commentMapper.selectById(comment.getParent_id());//根据父级id查对应的数据
+//            if (dbcomment == null){
+//                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT);//您的评论不存在
+//            }
             commentMapper.insert(comment);
         }else {
             //回复问题
@@ -76,6 +76,30 @@ public class CommentService {
 
         for (Comment comment : comments) {
             if (comment.getType()==1){
+                commentList.add(comment);
+            }
+        }
+        for (Comment comment : commentList) {
+            CommentDTO commentDTO=new CommentDTO();
+            BeanUtils.copyProperties(comment,commentDTO);
+            User user = userMapper.findById(comment.getCommentator());
+            commentDTO.setUser(user);
+            commentdtos.add(commentDTO);
+        }
+        return commentdtos;
+    }
+
+    public List<CommentDTO> listByQuestionId2(Integer id) {
+        List<Comment> comments = commentMapper.selectByIds(id);
+        List<Comment> commentList=new ArrayList<>();
+        List<CommentDTO> commentdtos=new ArrayList<>();
+
+        if (comments.size()==0){
+            return new ArrayList<>();
+        }
+
+        for (Comment comment : comments) {
+            if (comment.getType()==2){
                 commentList.add(comment);
             }
         }

@@ -2,16 +2,16 @@ package com.lic.ayr.community.controller;
 
 import com.lic.ayr.community.Util.LicReturn;
 import com.lic.ayr.community.dto.CommentCreateDTO;
+import com.lic.ayr.community.dto.CommentDTO;
 import com.lic.ayr.community.exception.CustomizeErrorCode;
 import com.lic.ayr.community.model.User;
 import com.lic.ayr.community.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -35,5 +35,12 @@ public class CommentController {
         commentService.insert(commentCreateDTO);
 
         return LicReturn.okof();
+    }
+
+    @ResponseBody
+    @GetMapping("/comment/{id}")
+    public LicReturn comments(@PathVariable(name = "id")Integer id){
+        List<CommentDTO> commentDTOS = commentService.listByQuestionId2(id);
+        return LicReturn.okof(commentDTOS);
     }
 }

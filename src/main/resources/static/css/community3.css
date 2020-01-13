@@ -39,3 +39,10 @@
 #btnTop:hover {
     background-color: #1E90FF;
 }
+.sub-comments{
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid #eee;
+    padding-top: 15px;
+    margin-bottom: 10px;
+}
