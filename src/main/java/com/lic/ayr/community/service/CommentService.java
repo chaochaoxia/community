@@ -53,6 +53,7 @@ public class CommentService {
 //                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT);//您的评论不存在
 //            }
             commentMapper.insert(comment);
+            commentMapper.updateCount(comment.getParent_id());
         }else {
             //回复问题
             Question question =quesstionMapper.getById(comment.getParent_id());//根据父级id查对应的数据
@@ -65,7 +66,7 @@ public class CommentService {
 
     }
 
-    public List<CommentDTO> listByQuestionId(Integer id) {
+    public List<CommentDTO> listByQuestionId(Integer id,Integer type) {
         List<Comment> comments = commentMapper.selectByIds(id);
         List<Comment> commentList=new ArrayList<>();
         List<CommentDTO> commentdtos=new ArrayList<>();
@@ -75,7 +76,7 @@ public class CommentService {
         }
 
         for (Comment comment : comments) {
-            if (comment.getType()==1){
+            if (comment.getType()==type){
                 commentList.add(comment);
             }
         }
@@ -89,27 +90,4 @@ public class CommentService {
         return commentdtos;
     }
 
-    public List<CommentDTO> listByQuestionId2(Integer id) {
-        List<Comment> comments = commentMapper.selectByIds(id);
-        List<Comment> commentList=new ArrayList<>();
-        List<CommentDTO> commentdtos=new ArrayList<>();
-
-        if (comments.size()==0){
-            return new ArrayList<>();
-        }
-
-        for (Comment comment : comments) {
-            if (comment.getType()==2){
-                commentList.add(comment);
-            }
-        }
-        for (Comment comment : commentList) {
-            CommentDTO commentDTO=new CommentDTO();
-            BeanUtils.copyProperties(comment,commentDTO);
-            User user = userMapper.findById(comment.getCommentator());
-            commentDTO.setUser(user);
-            commentdtos.add(commentDTO);
-        }
-        return commentdtos;
-    }
 }

@@ -19,4 +19,6 @@ public interface CommentMapper {
     @Select("select * from comment where parent_id = #{parent_id} order by gmt_create desc")
     List<Comment> selectByIds(@Param(value = "parent_id") Integer parent_id);
 
+    @Update("update comment set comment_count= comment_count + 1 where id=#{id}")
+    void updateCount(@Param(value = "id") Integer id);
 }

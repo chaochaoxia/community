@@ -11,6 +11,10 @@
     color: #999999;
     cursor: pointer;
 }
+.menu .active{
+    color: #499ef3;
+}
+
 .menu .icon:hover{
     color: #499ef3;
 }

@@ -40,7 +40,7 @@ public class CommentController {
     @ResponseBody
     @GetMapping("/comment/{id}")
     public LicReturn comments(@PathVariable(name = "id")Integer id){
-        List<CommentDTO> commentDTOS = commentService.listByQuestionId2(id);
+        List<CommentDTO> commentDTOS = commentService.listByQuestionId(id,2);
         return LicReturn.okof(commentDTOS);
     }
 }

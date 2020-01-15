@@ -25,7 +25,7 @@ public class QuestionController {
 
         QuestionToKenDTO questionToKenDTO=questionService.getById(id);
 
-        List<CommentDTO> comments=commentService.listByQuestionId(id);
+        List<CommentDTO> comments=commentService.listByQuestionId(id,1);
         model.addAttribute("question",questionToKenDTO);
         model.addAttribute("comments",comments);
         return "question";

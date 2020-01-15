@@ -13,5 +13,6 @@ public class Comment {
     private Long gmt_modified;
     private Long like_count;
     private String content;
+    private Long comment_count;
 
 }
