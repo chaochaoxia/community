@@ -3,7 +3,9 @@ package com.lic.ayr.community.mapper;
 import com.lic.ayr.community.model.Question;
 import org.apache.ibatis.annotations.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface QuesstionMapper {
@@ -35,5 +37,8 @@ public interface QuesstionMapper {
 
     @Update("update question set comment_count= comment_count + 1 where id=#{id}")
     void updateComment(@Param(value = "id")Integer id);
+
+    @Select("SELECT * FROM question WHERE id !=#{id} and tag regexp #{tag}")
+    List<Question> selsectRelated(@Param(value = "id") Integer id,@Param(value = "tag") String tag);
 
 }

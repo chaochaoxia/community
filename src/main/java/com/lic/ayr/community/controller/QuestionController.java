@@ -24,8 +24,9 @@ public class QuestionController {
     public String question(@PathVariable(name = "id")Integer id, Model model){
 
         QuestionToKenDTO questionToKenDTO=questionService.getById(id);
-
+        List<QuestionToKenDTO> relatedQuestion =questionService.selectRelated(questionToKenDTO);
         List<CommentDTO> comments=commentService.listByQuestionId(id,1);
+        model.addAttribute("relatedQuestion",relatedQuestion);
         model.addAttribute("question",questionToKenDTO);
         model.addAttribute("comments",comments);
         return "question";

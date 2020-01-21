@@ -11,9 +11,12 @@ import com.lic.ayr.community.model.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -115,4 +118,27 @@ public class QuestionService {
 
     }
 
+    public List<QuestionToKenDTO> selectRelated(QuestionToKenDTO questionToKenDTO) {
+        if(questionToKenDTO.getTag().length()==0 ||questionToKenDTO.getTag()==null||questionToKenDTO.getTag()==""){
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(questionToKenDTO.getTag(), ",");
+
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question=new Question();
+        question.setId(questionToKenDTO.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = quesstionMapper.selsectRelated(questionToKenDTO.getId(),question.getTag());
+        List<QuestionToKenDTO> questionDTOS =new ArrayList<>();
+        for (Question question1 : questions) {
+
+            QuestionToKenDTO questionDTO = new QuestionToKenDTO();//new DTO
+            BeanUtils.copyProperties(question1,questionDTO);//把question的属性复制给 DTO
+            questionDTOS.add(questionDTO);
+        }
+
+        return questionDTOS;
+
+     }
 }
