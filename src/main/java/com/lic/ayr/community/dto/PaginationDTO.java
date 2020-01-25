@@ -9,6 +9,7 @@ import java.util.List;
 public class PaginationDTO {
 
     private List<QuestionToKenDTO> questions; //这个是存放每次查询某一页的数据放在list中
+    private List<NotificationDTO> notifications; //这个是存放每次查询某一页的数据放在list中
     private boolean showPrevious;//是否有上一页
     private boolean showFirstPage;//是否有第一页
     private boolean showNext;//是否有下一页

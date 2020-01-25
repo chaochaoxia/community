@@ -13,8 +13,8 @@ public interface CommentMapper {
     @Insert("insert into comment (parent_id,type,commentator,gmt_create,gmt_modified,content) values (#{parent_id},#{type},#{commentator},#{gmt_create},#{gmt_modified},#{content})")
      void insert(Comment comment);
 
-    @Select("select * from comment where parent_id = #{parent_id}")
-    Comment selectById(@Param(value = "parent_id") Integer parent_id);
+    @Select("select * from comment where id = #{id}")
+    Comment selectById(@Param(value = "id") Integer id);
 
     @Select("select * from comment where parent_id = #{parent_id} order by gmt_create desc")
     List<Comment> selectByIds(@Param(value = "parent_id") Integer parent_id);
