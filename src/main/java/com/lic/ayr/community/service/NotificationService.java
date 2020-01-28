@@ -7,7 +7,6 @@ import com.lic.ayr.community.exception.CustomizeException;
 import com.lic.ayr.community.mapper.NotificationMapper;
 import com.lic.ayr.community.mapper.QuesstionMapper;
 import com.lic.ayr.community.mapper.UserMapper;
-import com.lic.ayr.community.model.Comment;
 import com.lic.ayr.community.model.Notification;
 import com.lic.ayr.community.model.Question;
 import com.lic.ayr.community.model.User;
@@ -34,11 +33,15 @@ public class NotificationService {
     public PaginationDTO userlist(Integer userid, Integer page, Integer size) {//跟userid相关
 
         Integer totalCount = notificationMapper.countByUserId(userid);
+
+
         PaginationDTO paginationDTO = new PaginationDTO();
         paginationDTO.setPagination(totalCount,page,size);
         Integer offset=size*(paginationDTO.getPage()-1);
 //        先查全部Notification
+
         List<Notification> notifications = notificationMapper.userlist(userid,offset,size);
+
 
         List<NotificationDTO> notificationDTOS=new ArrayList<>();
         //        再遍历每一个notification
@@ -64,7 +67,7 @@ public class NotificationService {
     }
 
     public Integer unreadCount(Integer id) {
-        Integer count =notificationMapper.countByUserId(id);
+        Integer count =notificationMapper.countByUserIdStatus(id);
         return count;
     }
 

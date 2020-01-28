@@ -2,6 +2,7 @@ package com.lic.ayr.community.interceptor;
 
 import com.lic.ayr.community.mapper.UserMapper;
 import com.lic.ayr.community.model.User;
+import com.lic.ayr.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,6 +19,8 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override//请求处理前
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -32,7 +35,10 @@ public class SessionInterceptor implements HandlerInterceptor {
                     User user=userMapper.selectToken(token);//给mysql数据库查 查到生成一个对象
 
                     if (user !=null && user.getId()!=null){//对象不为空的话
+
                         request.getSession().setAttribute("user",user);//再把它传到页面上
+                        Integer count = notificationService.unreadCount(user.getId());
+                        request.getSession().setAttribute("count",count);
                     }
                     break;
                 }

@@ -19,6 +19,7 @@ public class IndexController {
     QuestionService questionService;
     @Autowired
     NotificationService notificationService;
+
     @GetMapping("/")
     public String hello(
             Model model,
@@ -28,7 +29,7 @@ public class IndexController {
 //        在到首页之前先查询到所有动态和页码数然后发给页面遍历在页面上
         PaginationDTO pagination=questionService.list(page,size);
 
-            model.addAttribute("pagination",pagination);
+        model.addAttribute("pagination",pagination);
 
         return "index";
     }
