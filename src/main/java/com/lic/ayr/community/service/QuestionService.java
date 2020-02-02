@@ -1,6 +1,7 @@
 package com.lic.ayr.community.service;
 
 import com.lic.ayr.community.dto.PaginationDTO;
+import com.lic.ayr.community.dto.QuestionQueryDTO;
 import com.lic.ayr.community.dto.QuestionToKenDTO;
 import com.lic.ayr.community.exception.CustomizeErrorCode;
 import com.lic.ayr.community.exception.CustomizeException;
@@ -27,7 +28,16 @@ public class QuestionService {
     @Autowired
     QuesstionMapper quesstionMapper;
 
-    public PaginationDTO list(Integer page, Integer size) {//全部
+    public PaginationDTO list(String search,Integer page, Integer size) {//全部
+
+
+        if(search !=null){
+
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+
+        }
+
 
         Integer totalCount = quesstionMapper.count();
 
@@ -35,9 +45,9 @@ public class QuestionService {
         paginationDTO.setPagination(totalCount,page,size);
 
         Integer offset=size*(paginationDTO.getPage()-1);
-
         if (totalCount>0){
             List<Question> questions = quesstionMapper.list(offset,size);//        先查全部Questions
+//            List<Question> questions = quesstionMapper.selectBySearchlist(questionQueryDTO);//        先查全部Questions
         List<QuestionToKenDTO> questionToKenDTOList=new ArrayList<>();
         //        再遍历每一个question
         for (Question question : questions) {
@@ -57,8 +67,56 @@ public class QuestionService {
         return paginationDTO;//返回list
     }
 
+    public PaginationDTO searchlist(String search,Integer page, Integer size) {//全部
+
+
+        if(search !=null){
+
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+
+        }
+
+        QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+
+        questionQueryDTO.setSize(size);
+
+        Integer totalCount = quesstionMapper.countBySearch(questionQueryDTO);
+
+        PaginationDTO paginationDTO = new PaginationDTO();
+        paginationDTO.setPagination(totalCount,page,size);
+
+        Integer offset=size*(paginationDTO.getPage()-1);
+        questionQueryDTO.setPage(offset);
+        if (totalCount>0){
+//            List<Question> questions = quesstionMapper.list(offset,size);//        先查全部Questions
+            List<Question> questions = quesstionMapper.selectBySearchlist(questionQueryDTO);//        先查全部Questions
+            List<QuestionToKenDTO> questionToKenDTOList=new ArrayList<>();
+            //        再遍历每一个question
+            for (Question question : questions) {
+                User user=userMapper.findById(question.getCreator());//每一个question的用户id creator去找对应的user
+
+                QuestionToKenDTO questionToKenDTO = new QuestionToKenDTO();//new DTO
+
+                BeanUtils.copyProperties(question,questionToKenDTO);//把question的属性复制给 DTO
+
+                questionToKenDTO.setUser(user);//把user设到DTO中的user
+
+                questionToKenDTOList.add(questionToKenDTO);//把遍历的DTO都添加到list中
+            }
+            paginationDTO.setQuestions(questionToKenDTOList);
+        }
+
+        return paginationDTO;//返回list
+    }
+
     public PaginationDTO userlist(Integer userid, Integer page, Integer size) {//跟userid相关
         Integer totalCount = quesstionMapper.countByUserId(userid);
+        if (totalCount==0){
+
+            throw new CustomizeException(CustomizeErrorCode.NOT_QUESTION_FOUND);
+        }
         PaginationDTO paginationDTO = new PaginationDTO();
         paginationDTO.setPagination(totalCount,page,size);
 

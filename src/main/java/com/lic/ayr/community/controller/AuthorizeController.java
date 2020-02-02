@@ -6,6 +6,7 @@ import com.lic.ayr.community.dto.ReturnAccessToKenDTO;
 import com.lic.ayr.community.model.User;
 import com.lic.ayr.community.provider.MaYunProvider;
 import com.lic.ayr.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.UUID;
  * 接收code
  * */
 @Controller
+@Slf4j
 public class AuthorizeController {
 
     @Autowired
@@ -72,6 +74,8 @@ public class AuthorizeController {
             return "redirect:/";
 
         }else {
+//
+            log.error("callback get MaYun error,{}",mayunuser);
             return "redirect:/";
         }
     }

@@ -60,12 +60,12 @@ public class CommentService {
         if (comment.getType() ==CommentTypeEnum.COMMENT.getType()){
             //回复评论
 
-           Comment dbcomment =commentMapper.selectById(comment.getCommentator());//根据父级id查对应的数据
-
-
-            if (dbcomment == null ){
-                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT);//您的评论不存在
-            }
+//           Comment dbcomment =commentMapper.selectById(comment.getCommentator());//根据父级id查对应的数据
+//
+//
+//            if (dbcomment == null ){
+//                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT);//您的评论不存在
+//            }
 
             commentMapper.insert(comment);
 

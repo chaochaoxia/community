@@ -46,7 +46,7 @@ public class ProfileController {
             model.addAttribute("pagination",pagination);
 
         }else if ("replies".equals(action)){
-
+            
             PaginationDTO pagination = notificationService.userlist(user.getId(), page, size);
 
             model.addAttribute("section","replies");

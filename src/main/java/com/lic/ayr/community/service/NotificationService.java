@@ -33,6 +33,9 @@ public class NotificationService {
     public PaginationDTO userlist(Integer userid, Integer page, Integer size) {//跟userid相关
 
         Integer totalCount = notificationMapper.countByUserId(userid);
+        if (totalCount==0){
+            throw new CustomizeException(CustomizeErrorCode.NOT_FOUND);
+        }
 
 
         PaginationDTO paginationDTO = new PaginationDTO();
@@ -46,6 +49,7 @@ public class NotificationService {
         List<NotificationDTO> notificationDTOS=new ArrayList<>();
         //        再遍历每一个notification
         for (Notification notification : notifications) {
+
             User user=userMapper.findById(notification.getNotifier());//每一个notification的用户Notifier去找对应的user
 
             NotificationDTO notificationDTO = new NotificationDTO();//new DTO
@@ -59,7 +63,10 @@ public class NotificationService {
             }else {
                 notificationDTO.setOuterTitle("");
             }
-            notificationDTOS.add(notificationDTO);//把遍历的DTO都添加到list中
+            if (notification.getNotifier()!=notification.getReceiver()){
+                notificationDTOS.add(notificationDTO);//把遍历的DTO都添加到list中
+            }
+
         }
 
         paginationDTO.setNotifications(notificationDTOS);
@@ -75,7 +82,8 @@ public class NotificationService {
 
         Notification notification = notificationMapper.selectByKey(id);
 
-        if (notification.getNotifier()!=user.getId()){//接受通知的人和用户不是同一账号
+
+        if (notification.getNotifier()==user.getId()){//接受通知的人和用户是同一账号
             throw new CustomizeException(CustomizeErrorCode.READ_NOTIFICATION_FAIL);
         }
         notification.setStatus(1);

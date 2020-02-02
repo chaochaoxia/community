@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>动态详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -74,7 +75,6 @@
                         <div th:text="${comment.content}" class="comment-text"></div>
                         <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp2">
                         <div class="menu">
-                            <span class="glyphicon glyphicon-thumbs-up like-comment icon"></span>
                             <span class="glyphicon glyphicon-comment icon " th:data-id="${comment.id}" onclick="collapseCommetns(this)" th:text="${comment.comment_count}"></span>
                             <span class="pull-right desc" th:text="${#dates.format(comment.gmt_create,'yyyy-MM-dd hh:mm:ss')}"></span>
                         </div>
@@ -100,12 +100,12 @@
                 <div class="media ">
                     <div class="media-left">
                         <a href="#">
-                            <img class="media-object img-rounded" th:src="${question.user.avatar_url}">
+                            <img class="media-object img-rounded" th:src="${session.user != null ? session.user.avatar_url : '/img/default.jpg'}">
                         </a>
                     </div>
                     <div class="media-body">
                         <h5 class="media-heading">
-                            <span th:text="${question.user.name}"></span>
+                            <span th:text="${session.user != null ? session.user.name : '未登录用户'}"></span>
                         </h5>
                     </div>
                     <div>
@@ -114,7 +114,7 @@
                 </div>
                 <input type="hidden" id="question_id" th:value="${question.id}">
                 <textarea class="col-lg-12 col-md-12 col-sm-12 col-xs-12 from-control comment" rows="6" id="comment_textarea"></textarea>
-                <button type="button" class="btn btn-success comment-btn" onclick="comment()">回复</button>
+                <button type="button" class="btn btn-success comment-btn" onclick="comment()">评论</button>
             </div>
             </div>
         </div>
@@ -189,7 +189,7 @@
                     $("#comment_section").hide();
                     window.location.reload();
                 }else {
-                    // alert(response.message);
+                    alert(response.message);
                 }
             },
             dataType:"json"

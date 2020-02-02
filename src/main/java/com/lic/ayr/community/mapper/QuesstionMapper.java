@@ -1,5 +1,6 @@
 package com.lic.ayr.community.mapper;
 
+import com.lic.ayr.community.dto.QuestionQueryDTO;
 import com.lic.ayr.community.model.Question;
 import org.apache.ibatis.annotations.*;
 
@@ -17,13 +18,13 @@ public interface QuesstionMapper {
     @Select("select * from question ORDER BY gmt_create DESC limit #{offset},#{size}")
     List<Question> list(@Param(value = "offset") Integer offset,@Param(value = "size") Integer size);
 
-    @Select("select count(1) from question")//查动态的总数
+    @Select("select count(*) from question")//查动态的总数
     Integer count();
 
     @Select("select * from question where creator = #{userId} ORDER BY gmt_create DESC limit #{offset},#{size}")
     List<Question> userlist(@Param(value = "userId")Integer userId,@Param(value = "offset") Integer offset,@Param(value = "size") Integer size);
 
-    @Select("select count(1) from question where creator = #{userId}")//查跟user动态的总数
+    @Select("select count(*) from question where creator = #{userId}")//查跟user动态的总数
     Integer countByUserId(@Param(value = "userId")Integer userid);
 
     @Select("select * from question where id = #{id}")
@@ -40,5 +41,28 @@ public interface QuesstionMapper {
 
     @Select("SELECT * FROM question WHERE id !=#{id} and tag regexp #{tag}")
     List<Question> selsectRelated(@Param(value = "id") Integer id,@Param(value = "tag") String tag);
+
+    @Select({"<script>",
+            "SELECT count(*) FROM question",
+            "<where>",
+            "<if test='search!=null'>",
+            "AND title regexp #{search}",
+            "</if>",
+            "</where>",
+            "</script>"})
+    Integer countBySearch(QuestionQueryDTO questionQueryDTO);
+
+
+
+    @Select({"<script>",
+            "SELECT * FROM question",
+            "<where>",
+            "<if test='search!=null'>",
+            "AND title regexp #{search}",
+            "</if>",
+            "</where>",
+            "limit #{page},#{size}",
+            "</script>"})
+    List<Question> selectBySearchlist(QuestionQueryDTO questionQueryDTO);
 
 }

@@ -19,6 +19,7 @@ public class NotificationController {
 
     @GetMapping("/notification/{id}")
     public String profile(@PathVariable(name = "id")Integer id,HttpServletRequest request){
+
         User user =(User)request.getSession().getAttribute("user");
 
         if (user==null){
@@ -26,6 +27,7 @@ public class NotificationController {
         }
 
         NotificationDTO notificationDTO=notificationService.read(id,user);
+
         if (notificationDTO.getStatus() == 1){
             return "redirect:/question/"+notificationDTO.getOuterId();
         }else {
