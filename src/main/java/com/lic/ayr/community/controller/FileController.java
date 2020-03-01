@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -20,14 +21,14 @@ import java.io.InputStream;
 
 
 
-@Controller
+@RestController
 public class FileController {
 
     @Autowired
     FileService fileService;
 
 
-    @ResponseBody
+
     @RequestMapping("/file/upload")
     public FileDTO upload(HttpServletRequest request) throws IOException {
 

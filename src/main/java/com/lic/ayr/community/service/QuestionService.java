@@ -78,9 +78,7 @@ public class QuestionService {
         }
 
         QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
-        questionQueryDTO.setSearch(search);
-
-        questionQueryDTO.setSize(size);
+        questionQueryDTO.setSearch(search).setSize(size);
 
         Integer totalCount = quesstionMapper.countBySearch(questionQueryDTO);
 
